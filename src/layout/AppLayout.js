@@ -1,8 +1,8 @@
 import { Box, Center, Text } from "@chakra-ui/react";
 import React from "react";
-import PropTypes from "prop-types";
+import { Outlet } from "react-router-dom";
 
-const AppLayout = ({ children }) => {
+const AppLayout = () => {
   return (
     <>
       <Box>
@@ -24,7 +24,7 @@ const AppLayout = ({ children }) => {
             gap={4}
             p={[5, 3]}
           >
-            {children}
+            <Outlet />
           </Box>
         </Center>
       </Box>
@@ -34,6 +34,6 @@ const AppLayout = ({ children }) => {
 
 export default AppLayout;
 
-AppLayout.propTypes = {
-  children: PropTypes.any,
-};
+// AppLayout.propTypes = {
+//   children: PropTypes.any,
+// };
