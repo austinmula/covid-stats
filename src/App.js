@@ -1,49 +1,41 @@
-import React, { useContext, useEffect, useState } from "react";
+import { Box } from "@chakra-ui/react";
+import React, { useContext, useEffect } from "react";
+// import Loading from "./components/Loading";
+import Search from "./components/Search";
 import StatsTable from "./components/StatsTable";
 import { AppContext } from "./context/app-context";
+import AppLayout from "./layout/AppLayout";
 
 function App() {
-  const { overallStats, getOverallStats } = useContext(AppContext);
-  const [, setIsLoading] = useState(false);
+  const { overallStats, getOverallStats, isLoading } = useContext(AppContext);
+  // const [, setIsLoading] = useState(false);
+
+  // const load = true;
 
   useEffect(() => {
-    setIsLoading(true);
+    // setIsLoading(true);
     getOverallStats();
   }, []);
 
-  // if (isLoading) return <p>Loading ..</p>;
+  // if (load) return <Loading />;
 
   return (
-    <div>
-      <StatsTable data={overallStats} />
-      {/* {posts?.length < 1 ? (
-        <p>Nothing to show here</p>
-      ) : (
-        <ul>
-          {posts?.map((item) => (
-            <li key={item.country}>{item.country}</li>
-          ))}
-        </ul>
-      )} */}
+    <>
+      <AppLayout>
+        <Search />
 
-      <div
-        style={{
-          display: "flex",
-          gap: "5px",
-          minWidth: "100vw",
-        }}
-      >
-        {/* {pagenumbers?.map((i) => (
-          <div
-            onClick={() => changePage(i)}
-            key={i}
-            style={{ background: "#fff", width: "20px", cursor: "pointer" }}
-          >
-            {i}
-          </div>
-        ))} */}
-      </div>
-    </div>
+        <Box
+          boxShadow="xs"
+          rounded="sm"
+          bg="whiteAlpha.800"
+          w={{ base: "100vw", md: "100vw", lg: "100%" }}
+          minW={{ lg: "800px", xl: "1200px" }}
+          overflowX={"scroll"}
+        >
+          <StatsTable data={overallStats} isLoading={isLoading} />
+        </Box>
+      </AppLayout>
+    </>
   );
 }
 
