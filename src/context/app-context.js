@@ -52,6 +52,7 @@ const AppContextProvider = ({ children }) => {
       setIsLoading(true);
       const response = await axios.request(options);
       setOverallStats(response.data.response);
+      console.log(response.data.response);
       setIsSuccess(true);
     } catch (error) {
       setIsError(true);

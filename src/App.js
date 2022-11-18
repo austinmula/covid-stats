@@ -14,7 +14,7 @@ function App() {
   // if (isLoading) return <p>Loading ..</p>;
 
   return (
-    <div className="App">
+    <div>
       <StatsTable data={overallStats} />
       {/* {posts?.length < 1 ? (
         <p>Nothing to show here</p>
