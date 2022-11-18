@@ -47,7 +47,9 @@ const StatsTable = ({ data, isLoading }) => {
   return (
     <>
       <Box py={[4, 9]} textAlign={"center"}>
-        <Heading color="gray.700">Overall Covid-19 Statistics</Heading>
+        <Heading as="h1" size="xl" color="gray.700">
+          Overall Covid-19 Statistics
+        </Heading>
         <Text mt={2} w={"60%"} mx="auto" color="gray.500" letterSpacing={"1px"}>
           The table below contains real-time data for New Infections, New
           Deaths, and the cummulative number of both for countries all over the

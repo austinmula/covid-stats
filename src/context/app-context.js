@@ -7,10 +7,11 @@ export const AppContext = createContext({
   county: [],
   overallStats: [],
   getOverallStats: () => {},
+  getCountryStats: () => {},
 });
 
 const AppContextProvider = ({ children }) => {
-  //   const [country, setCountry] = useState([]);
+  const [country, setCountry] = useState([]);
   const [countries, setCountries] = useState([]);
   const [overallStats, setOverallStats] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -34,6 +35,28 @@ const AppContextProvider = ({ children }) => {
       setIsLoading(true);
       const response = await axios.request(options);
       setCountries(response.data.response);
+      setIsSuccess(true);
+    } catch (error) {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Get Historical Data of a given country
+  const getCountryStats = async (data) => {
+    options = {
+      ...options,
+      url: "https://covid-193.p.rapidapi.com/history",
+      params: { country: data.country, day: "2022-11-17" },
+    };
+
+    // console.log(options);
+    try {
+      setIsLoading(true);
+      const response = await axios.request(options);
+      setCountry(response.data.response);
+      console.log(response.data.response);
       setIsSuccess(true);
     } catch (error) {
       setIsError(true);
@@ -71,7 +94,8 @@ const AppContextProvider = ({ children }) => {
     setIsSuccess,
     setIsLoading,
     countries,
-    // country,
+    country,
+    getCountryStats,
     overallStats,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
