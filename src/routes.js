@@ -10,7 +10,7 @@ import OverallStatistics from "./pages/OverallStatistics";
 export default function Router() {
   const routes = useRoutes([
     {
-      path: "/",
+      path: "/covid-stats",
       element: <AppLayout />,
       children: [
         { index: true, element: <OverallStatistics /> },
