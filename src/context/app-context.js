@@ -1,6 +1,7 @@
 import React, { createContext, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import { format } from "date-fns";
 
 export const AppContext = createContext({
   countries: [],
@@ -48,13 +49,17 @@ const AppContextProvider = ({ children }) => {
     options = {
       ...options,
       url: "https://covid-193.p.rapidapi.com/history",
-      params: { country: data.country, day: "2022-11-17" },
+      params: { country: data.country, day: "2022-11-18" },
     };
 
     // console.log(options);
     try {
       setIsLoading(true);
       const response = await axios.request(options);
+      response.data.response.forEach((element) => {
+        element.time = format(new Date(element.time), "hh:mm");
+      });
+
       setCountry(response.data.response);
       console.log(response.data.response);
       setIsSuccess(true);
