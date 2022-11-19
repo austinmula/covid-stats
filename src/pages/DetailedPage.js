@@ -1,22 +1,26 @@
-import { Box, Grid, GridItem, Text, VStack } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Heading, Text, VStack } from "@chakra-ui/react";
 import React, { useContext, useEffect } from "react";
 import Loading from "../components/Loading";
 import { AppContext } from "../context/app-context";
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  Tooltip,
-  YAxis,
-} from "recharts";
-// import { format, parseISO } from "date-fns";
+
+import GridList from "../components/GridList";
+import OverallChart from "../components/charts/OverallChart";
+import { useLocation } from "react-router-dom";
+import CasesTodayChart from "../components/charts/CasesTodayChart";
+import { format } from "date-fns";
+import { numberWithcommas } from "../utils/numberFormats";
 
 const DetailedPage = () => {
-  const { getCountryStats, isLoading, country } = useContext(AppContext);
+  const { getCountryStats, isLoading, country, getTodaysData, todayData } =
+    useContext(AppContext);
+  const date = Date.now();
+  const location = useLocation();
   useEffect(() => {
-    getCountryStats({ country: "usa" });
-    console.log(country);
+    getCountryStats(location.state);
+    getTodaysData({
+      day: format(date, "yyyy-MM-dd"),
+      country: location.state.country,
+    });
   }, []);
 
   if (isLoading) return <Loading />;
@@ -24,134 +28,108 @@ const DetailedPage = () => {
   //   x-axis label
 
   return (
-    <VStack spacing={3}>
+    <VStack
+      spacing={4}
+      boxSize={"border-box"}
+      mx={3}
+      w={{ base: "95vw", md: "100vw", lg: "100%" }}
+      maxW={{ lg: "800px", xl: "1200px" }}
+      overflowX={"scroll"}
+    >
+      {/* left */}
+      <Box w="full">
+        <Heading size="xl" textAlign={"left"} color="gray.700">
+          {location.state.country} Covid-19 Data
+        </Heading>
+      </Box>
+      {/* right */}
       <Box
         bg="#fff"
         w={{ base: "100vw", md: "100vw", lg: "100%" }}
         minW={{ lg: "800px", xl: "1200px" }}
         p={4}
       >
-        {country.map((ctry, index) => {
-          let keys = Object.keys(ctry);
-
-          return (
-            <div className="row" key={ctry.country}>
-              <Text
-                color={"blackAlpha.600"}
-                fontWeight={600}
-                fontSize={"lg"}
-                letterSpacing="1px"
-              >
-                population
-                {keys[index]}
-              </Text>
-            </div>
-          );
-        })}
-        <Grid
-          templateColumns="repeat(6, 1fr)"
-          gap={0}
-          fontSize={"lg"}
-          rowGap={2}
-          letterSpacing="1px"
-        >
-          <GridItem>
-            <Text color={"blackAlpha.600"} fontWeight={600}>
-              Country
-            </Text>
-          </GridItem>
-
-          <GridItem>
-            <Text color={"blackAlpha.600"} fontWeight={600}>
-              Country
-            </Text>
-          </GridItem>
-          <GridItem colStart={2} colEnd={7} bg="papayawhip">
-            {country.country}
-          </GridItem>
-          <GridItem>
-            <Text color={"blackAlpha.600"} fontWeight={600}>
-              Continent
-            </Text>
-          </GridItem>
-          <GridItem colStart={2} colEnd={7} bg="papayawhip">
-            Africa
-          </GridItem>
-          <GridItem>
-            <Text color={"blackAlpha.600"} fontWeight={600}>
-              Population
-            </Text>
-          </GridItem>
-          <GridItem colStart={2} colEnd={7} bg="papayawhip">
-            12244657
-          </GridItem>
-          <GridItem>
-            <Text color={"blackAlpha.600"} fontWeight={600}>
-              Deaths Today
-            </Text>
-          </GridItem>
-          <GridItem colStart={2} colEnd={7} bg="papayawhip">
-            12244657
-          </GridItem>
-        </Grid>
+        {country.slice(0, 1).map((cty, index) => (
+          <Grid
+            key={index}
+            templateColumns="repeat(2, 1fr)"
+            gap={0}
+            columnGap={3}
+          >
+            <GridList
+              key={"cty.continent"}
+              name="Continent:"
+              item={cty.continent}
+            />
+            <GridList key={cty.country} name=" Country:" item={cty.country} />
+            <GridList
+              key={"cty.population"}
+              name="Population:"
+              item={numberWithcommas(cty.population)}
+            />
+            <GridList key={cty.day} name="  Date:" item={cty.day} />
+            <GridList
+              key={"cty.cases.active"}
+              name="Active Cases:"
+              item={cty.cases.active}
+            />
+            <GridList
+              key={"cty.cases.new"}
+              name="New Cases:"
+              item={cty.cases.new}
+            />
+            <GridList
+              key={"cty.cases.critical"}
+              name="Critical Cases:"
+              item={cty.cases.critical}
+            />
+            <GridList
+              key={"cty.cases.recovered"}
+              name="Recovered Cases:"
+              item={numberWithcommas(cty.cases.recovered)}
+            />
+            <GridList
+              key={"cty.deaths.new"}
+              name="New Death cases :"
+              item={cty.deaths.new}
+            />
+            <GridList
+              key={"cty.deaths.total"}
+              name="Total Deaths :"
+              item={numberWithcommas(cty.deaths.total)}
+            />
+            <GridList
+              key={cty.tests.total}
+              name="Total Tests:"
+              item={cty.tests.total}
+            />
+          </Grid>
+        ))}
       </Box>
 
       <Box w="full" h="fit-content">
         <Grid
-          templateColumns="repeat(2, 1fr)"
+          templateColumns="repeat(6, 1fr)"
           gap={2}
           fontSize={"lg"}
           letterSpacing="1px"
         >
-          <GridItem bg="whiteAlpha.800">
-            <LineChart
-              width={500}
-              height={300}
-              data={country}
-              margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-            >
-              {/* <Line type="monotone" dataKey="cases.new" stroke="#8884d8" /> */}
-
-              <Line type="monotone" dataKey="deaths.new" stroke="#ed613e" />
-              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-              <XAxis dataKey="time" />
-              <YAxis />
-              <Tooltip />
-            </LineChart>
+          <GridItem bg="whiteAlpha.800" colSpan={[6, 6]}>
+            <Box borderBottom="1px solid #f3f3f3" p={4}>
+              <Text fontSize={"xl"}>Overall Data for 2022 </Text>
+            </Box>
+            <Box bg="whiteAlpha.700" p={8}>
+              <OverallChart data={country} />
+            </Box>
           </GridItem>
 
-          <GridItem bg="whiteAlpha.800">
-            <LineChart
-              width={500}
-              height={300}
-              data={country}
-              margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-            >
-              <Line type="monotone" dataKey="cases.new" stroke="#8884d8" />
-
-              <Line type="monotone" dataKey="deaths.new" stroke="#ed613e" />
-              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-              <XAxis dataKey="time" />
-              <YAxis />
-              <Tooltip />
-            </LineChart>
-          </GridItem>
-
-          <GridItem bg="whiteAlpha.800">
-            <LineChart
-              width={500}
-              height={300}
-              data={country}
-              margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-            >
-              {/* <Line type="monotone" dataKey="cases.new" stroke="#8884d8" /> */}
-
-              <Line type="monotone" dataKey="cases.new" stroke="#ed613e" />
-              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-              <XAxis dataKey="time" />
-              <YAxis />
-              <Tooltip />
-            </LineChart>
+          <GridItem bg="whiteAlpha.800" colSpan={[6, 4]}>
+            <Box borderBottom="1px solid #f3f3f3" p={4}>
+              <Text fontSize={"xl"}>New Cases & Deaths Today </Text>
+            </Box>
+            <Box bg="whiteAlpha.700" p={8}>
+              <CasesTodayChart data={todayData} />
+            </Box>
           </GridItem>
         </Grid>
       </Box>

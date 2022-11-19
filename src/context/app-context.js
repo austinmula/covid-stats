@@ -5,14 +5,17 @@ import { format } from "date-fns";
 
 export const AppContext = createContext({
   countries: [],
+  todayData: [],
   county: [],
   overallStats: [],
   getOverallStats: () => {},
   getCountryStats: () => {},
+  getTodaysData: () => {},
 });
 
 const AppContextProvider = ({ children }) => {
   const [country, setCountry] = useState([]);
+  const [todayData, setTodayData] = useState([]);
   const [countries, setCountries] = useState([]);
   const [overallStats, setOverallStats] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -44,24 +47,82 @@ const AppContextProvider = ({ children }) => {
     }
   };
 
+  const getTodaysData = async (data) => {
+    options = {
+      ...options,
+      url: "https://covid-193.p.rapidapi.com/history",
+      params: data,
+    };
+    try {
+      setIsLoading(true);
+      const response = await axios.request(options);
+      response.data.response.forEach((element) => {
+        // console.log(format(new Date(element.day), "y"));
+        element.time = format(new Date(element.time), "HH:mm");
+        element.cases.new = parseInt(element.cases.new);
+        element.deaths.new = parseInt(element.deaths.new);
+      });
+
+      console.log(response.data.response);
+      setTodayData(
+        response.data.response.sort((a, b) =>
+          new Date(a.day) !== new Date(b.day)
+            ? new Date(a.day) < new Date(b.day)
+              ? -1
+              : 1
+            : 0
+        )
+      );
+
+      setIsSuccess(true);
+    } catch (error) {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Get Historical Data of a given country
   const getCountryStats = async (data) => {
     options = {
       ...options,
       url: "https://covid-193.p.rapidapi.com/history",
-      params: { country: data.country, day: "2022-11-18" },
+      params: { country: data.country },
     };
 
     // console.log(options);
     try {
       setIsLoading(true);
       const response = await axios.request(options);
+
       response.data.response.forEach((element) => {
-        element.time = format(new Date(element.time), "hh:mm");
+        element.cases.new = parseInt(element.cases.new);
+        element.deaths.new = parseInt(element.deaths.new);
       });
 
-      setCountry(response.data.response);
-      console.log(response.data.response);
+      setCountry(
+        response.data.response
+          .filter((item) => format(new Date(item.day), "y") == "2022")
+          .sort((a, b) =>
+            new Date(a.day) !== new Date(b.day)
+              ? new Date(a.day) < new Date(b.day)
+                ? -1
+                : 1
+              : 0
+          )
+          .slice(
+            response.data.response.length - 230,
+            response.data.response.length
+          )
+      );
+
+      setCountry(
+        response.data.response.filter(
+          (item) => format(new Date(item.day), "y") == "2022"
+        )
+      );
+      // setCountry(newArr);
+      // console.log(country);
       setIsSuccess(true);
     } catch (error) {
       setIsError(true);
@@ -102,6 +163,8 @@ const AppContextProvider = ({ children }) => {
     country,
     getCountryStats,
     overallStats,
+    getTodaysData,
+    todayData,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

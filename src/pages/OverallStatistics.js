@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import React, { useContext, useEffect } from "react";
-import Search from "../components/Search";
+// import Search from "../components/Search";
 import StatsTable from "../components/StatsTable";
 import { AppContext } from "../context/app-context";
 
@@ -12,7 +12,7 @@ const OverallStatistics = () => {
   }, []);
   return (
     <>
-      <Search />
+      {/* <Search /> */}
       <Box
         boxShadow="xs"
         rounded="sm"

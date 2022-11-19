@@ -13,14 +13,20 @@ export default function Router() {
       path: "/covid-stats",
       element: <AppLayout />,
       children: [
-        { index: true, element: <OverallStatistics /> },
-        { path: ":id", element: <DetailedPage /> },
+        { index: true, element: <Navigate to="/covid-stats/home" /> },
+        { path: "home", element: <OverallStatistics /> },
+        { path: "country-stats/:id", element: <DetailedPage /> },
       ],
+    },
+    {
+      index: true,
+      element: <Navigate to="/covid-stats/home" />,
     },
     {
       path: "*",
       element: <Navigate to="/404" replace />,
     },
+
     {
       path: "/404",
       element: <NotFound />,

@@ -15,15 +15,19 @@ import {
   Box,
   Text,
   Center,
+  Button,
 } from "@chakra-ui/react";
 // import { usePagination } from "../hooks/usePagination";
 import PropTypes from "prop-types";
 import Loading from "./Loading";
+import { Link } from "react-router-dom";
+import { numberWithcommas } from "../utils/numberFormats";
+import Search from "./Search";
 
 const StatsTable = ({ data, isLoading }) => {
-  //   const { posts } = usePagination(data);
   const [itemsPerpage] = useState(25);
   const [currentPage, setCurrentPage] = useState(1);
+  const [filterName, setFilterName] = useState("");
   const pageNumbers = [];
 
   const indexofLastItem = itemsPerpage * currentPage;
@@ -32,6 +36,15 @@ const StatsTable = ({ data, isLoading }) => {
     .sort((a, b) =>
       a.continent !== b.continent ? (a.continent < b.continent ? -1 : 1) : 0
     )
+    .filter((skey) => {
+      if (filterName === "") {
+        return skey;
+      } else if (
+        skey.country.toLowerCase().includes(filterName.toLocaleLowerCase())
+      ) {
+        return skey;
+      }
+    })
     .slice(indexofFirstItem, indexofLastItem);
 
   for (let i = 1; i <= Math.ceil(data.length / itemsPerpage); i++) {
@@ -40,6 +53,11 @@ const StatsTable = ({ data, isLoading }) => {
 
   const handleClick = (i) => {
     setCurrentPage(i);
+  };
+
+  const handleFilterByName = (e) => {
+    setCurrentPage(1);
+    setFilterName(e.target.value);
   };
 
   if (isLoading) return <Loading />;
@@ -51,15 +69,14 @@ const StatsTable = ({ data, isLoading }) => {
           Overall Covid-19 Statistics
         </Heading>
         <Text mt={2} w={"60%"} mx="auto" color="gray.500" letterSpacing={"1px"}>
-          The table below contains real-time data for New Infections, New
-          Deaths, and the cummulative number of both for countries all over the
-          world.
+          The table below rapidAPI data for new infections, new deaths, and the
+          cummulative number of cases, recoveries and deaths, for countries all
+          over the world.
         </Text>
+        <Search handleFilterByName={handleFilterByName} />
       </Box>
       <TableContainer>
-        <Table variant="simple" colorScheme={"facebook"}>
-          {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
-          {/* <Table> */}
+        <Table variant="simple">
           <Thead>
             <Tr>
               <Th></Th>
@@ -70,7 +87,7 @@ const StatsTable = ({ data, isLoading }) => {
               <Th isNumeric>Total Cases</Th>
               <Th isNumeric>New Deaths</Th>
               <Th isNumeric>Total Deaths</Th>
-              {/* <Th></Th> */}
+              <Th></Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -79,33 +96,46 @@ const StatsTable = ({ data, isLoading }) => {
                 <Td>{indexofFirstItem + index + 1}</Td>
                 <Td>{item.country}</Td>
                 <Td>{item.continent}</Td>
-                <Td isNumeric>{item.population}</Td>
-                <Td isNumeric>{item.cases.new}</Td>
-                <Td isNumeric>{item.cases.total}</Td>
-                <Td isNumeric>{item.deaths.new}</Td>
-                <Td isNumeric>{item.deaths.total}</Td>
+                <Td isNumeric>{numberWithcommas(item.population)}</Td>
+                <Td isNumeric>{numberWithcommas(item.cases.new)}</Td>
+                <Td isNumeric>{numberWithcommas(item.cases.total)}</Td>
+                <Td isNumeric>{numberWithcommas(item.deaths.new)}</Td>
+                <Td isNumeric>{numberWithcommas(item.deaths.total)}</Td>
+                <Td>
+                  <Button
+                    size="sm"
+                    colorScheme={"whatsapp"}
+                    as={Link}
+                    to={`/covid-stats/country-stats/${item.country}`}
+                    state={{ country: item.country }}
+                  >
+                    more info
+                  </Button>
+                </Td>
               </Tr>
             ))}
           </Tbody>
         </Table>
       </TableContainer>
-      <Center py={[2, 3]} gap={2}>
-        {pageNumbers.map((item) => (
-          <Center
-            w="20px"
-            h="20px"
-            p={4}
-            // border="1px solid #333"
-            cursor={item !== currentPage ? "pointer" : null}
-            bg={item === currentPage ? "green.600" : "gray.700"}
-            color="white"
-            onClick={() => handleClick(item)}
-            key={item}
-          >
-            {item}
-          </Center>
-        ))}
-      </Center>
+      {!filterName && (
+        <Center py={[2, 3]} gap={2}>
+          {pageNumbers.map((item) => (
+            <Center
+              w="20px"
+              h="20px"
+              p={4}
+              // border="1px solid #333"
+              cursor={item !== currentPage ? "pointer" : null}
+              bg={item === currentPage ? "green.600" : "gray.700"}
+              color="white"
+              onClick={() => handleClick(item)}
+              key={item}
+            >
+              {item}
+            </Center>
+          ))}
+        </Center>
+      )}
     </>
   );
 };
