@@ -14,10 +14,18 @@ import PropTypes from "prop-types";
 const OverallChart = ({ data }) => {
   return (
     <ResponsiveContainer width={"95%"} height={300}>
-      <BarChart data={data}>
+      <BarChart
+        data={data.sort((a, b) =>
+          new Date(a.day) !== new Date(b.day)
+            ? new Date(a.day) < new Date(b.day)
+              ? -1
+              : 1
+            : 0
+        )}
+      >
         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
         <XAxis dataKey="day" hide={true} />
-        <YAxis type="number" allowDataOverflow={true} height={400} />
+        <YAxis allowDataOverflow={true} height={400} />
         <Bar dataKey={"cases.new"} fill="##1f4e6b" />
         <Bar dataKey={"deaths.new"} fill="#ff0000" />
         <Legend />

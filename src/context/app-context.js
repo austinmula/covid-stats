@@ -57,19 +57,19 @@ const AppContextProvider = ({ children }) => {
       setIsLoading(true);
       const response = await axios.request(options);
       response.data.response.forEach((element) => {
-        // console.log(format(new Date(element.day), "y"));
         element.time = format(new Date(element.time), "HH:mm");
-        element.cases.new = parseInt(element.cases.new);
-        element.deaths.new = parseInt(element.deaths.new);
+
+        element.cases.new && (element.cases.new = parseInt(element.cases.new));
+        element.deaths.new &&
+          (element.deaths.new = parseInt(element.deaths.new));
       });
 
-      console.log(response.data.response);
       setTodayData(
         response.data.response.sort((a, b) =>
-          new Date(a.day) !== new Date(b.day)
-            ? new Date(a.day) < new Date(b.day)
-              ? -1
-              : 1
+          new Date(a.time) !== new Date(b.time)
+            ? new Date(a.time) < new Date(b.time)
+              ? 1
+              : -1
             : 0
         )
       );
@@ -96,33 +96,16 @@ const AppContextProvider = ({ children }) => {
       const response = await axios.request(options);
 
       response.data.response.forEach((element) => {
-        element.cases.new = parseInt(element.cases.new);
-        element.deaths.new = parseInt(element.deaths.new);
+        element.cases.new && (element.cases.new = parseInt(element.cases.new));
+        element.deaths.new &&
+          (element.deaths.new = parseInt(element.deaths.new));
       });
-
-      setCountry(
-        response.data.response
-          .filter((item) => format(new Date(item.day), "y") == "2022")
-          .sort((a, b) =>
-            new Date(a.day) !== new Date(b.day)
-              ? new Date(a.day) < new Date(b.day)
-                ? -1
-                : 1
-              : 0
-          )
-          .slice(
-            response.data.response.length - 230,
-            response.data.response.length
-          )
-      );
 
       setCountry(
         response.data.response.filter(
           (item) => format(new Date(item.day), "y") == "2022"
         )
       );
-      // setCountry(newArr);
-      // console.log(country);
       setIsSuccess(true);
     } catch (error) {
       setIsError(true);
@@ -141,7 +124,6 @@ const AppContextProvider = ({ children }) => {
       setIsLoading(true);
       const response = await axios.request(options);
       setOverallStats(response.data.response);
-      console.log(response.data.response);
       setIsSuccess(true);
     } catch (error) {
       setIsError(true);

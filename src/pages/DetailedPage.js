@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import CasesTodayChart from "../components/charts/CasesTodayChart";
 import { format } from "date-fns";
 import { numberWithcommas } from "../utils/numberFormats";
+import OverallDeaths from "../components/charts/OverallDeaths";
 
 const DetailedPage = () => {
   const { getCountryStats, isLoading, country, getTodaysData, todayData } =
@@ -91,7 +92,7 @@ const DetailedPage = () => {
             <GridList
               key={"cty.deaths.new"}
               name="New Death cases :"
-              item={cty.deaths.new}
+              item={numberWithcommas(cty.deaths.new)}
             />
             <GridList
               key={"cty.deaths.total"}
@@ -114,21 +115,35 @@ const DetailedPage = () => {
           fontSize={"lg"}
           letterSpacing="1px"
         >
+          <GridItem bg="whiteAlpha.800" colSpan={[6, 5]}>
+            <Box borderBottom="1px solid #f3f3f3" p={4}>
+              <Text fontSize={"xl"}>New Cases & Deaths Today </Text>
+            </Box>
+            <Box bg="whiteAlpha.700" p={8}>
+              <CasesTodayChart data={todayData} />
+            </Box>
+          </GridItem>
           <GridItem bg="whiteAlpha.800" colSpan={[6, 6]}>
             <Box borderBottom="1px solid #f3f3f3" p={4}>
-              <Text fontSize={"xl"}>Overall Data for 2022 </Text>
+              <Text fontSize={"xl"}>
+                Overall Covid for 2022 {location.state.country}{" "}
+              </Text>
             </Box>
             <Box bg="whiteAlpha.700" p={8}>
               <OverallChart data={country} />
             </Box>
           </GridItem>
 
-          <GridItem bg="whiteAlpha.800" colSpan={[6, 4]}>
+          <GridItem bg="whiteAlpha.800" colSpan={[6, 6]}>
             <Box borderBottom="1px solid #f3f3f3" p={4}>
-              <Text fontSize={"xl"}>New Cases & Deaths Today </Text>
+              <Text fontSize={"xl"}>
+                Covid 19 Total Recoveries vs Total Deaths -{" "}
+                {location.state.country}
+              </Text>
+              <Text fontSize={"sm"}>last few days</Text>
             </Box>
             <Box bg="whiteAlpha.700" p={8}>
-              <CasesTodayChart data={todayData} />
+              <OverallDeaths data={country} />
             </Box>
           </GridItem>
         </Grid>
