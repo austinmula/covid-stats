@@ -33,21 +33,23 @@ const StatsTable = ({ data, isLoading }) => {
   const indexofLastItem = itemsPerpage * currentPage;
   const indexofFirstItem = indexofLastItem - itemsPerpage;
   const items = data
-    .sort((a, b) =>
-      a.continent !== b.continent ? (a.continent < b.continent ? -1 : 1) : 0
-    )
+    // .sort((a, b) =>
+    //   a.population !== b.population ? (a.population < b.population ? -1 : 1) : 0
+    // )
     .filter((skey) => {
       if (filterName === "") {
         return skey;
       } else if (
-        skey.country.toLowerCase().includes(filterName.toLocaleLowerCase())
+        skey.country
+          .concat(skey.continent)
+          .toLowerCase()
+          .includes(filterName.toLocaleLowerCase())
       ) {
         return skey;
       }
-    })
-    .slice(indexofFirstItem, indexofLastItem);
+    });
 
-  for (let i = 1; i <= Math.ceil(data.length / itemsPerpage); i++) {
+  for (let i = 1; i <= Math.ceil(items.length / itemsPerpage); i++) {
     pageNumbers.push(i);
   }
 
@@ -91,51 +93,51 @@ const StatsTable = ({ data, isLoading }) => {
             </Tr>
           </Thead>
           <Tbody>
-            {items.map((item, index) => (
-              <Tr key={item.country}>
-                <Td>{indexofFirstItem + index + 1}</Td>
-                <Td>{item.country}</Td>
-                <Td>{item.continent}</Td>
-                <Td isNumeric>{numberWithcommas(item.population)}</Td>
-                <Td isNumeric>{numberWithcommas(item.cases.new)}</Td>
-                <Td isNumeric>{numberWithcommas(item.cases.total)}</Td>
-                <Td isNumeric>{numberWithcommas(item.deaths.new)}</Td>
-                <Td isNumeric>{numberWithcommas(item.deaths.total)}</Td>
-                <Td>
-                  <Button
-                    size="sm"
-                    colorScheme={"whatsapp"}
-                    as={Link}
-                    to={`/covid-stats/country-stats/${item.country}`}
-                    state={{ country: item.country }}
-                  >
-                    more info
-                  </Button>
-                </Td>
-              </Tr>
-            ))}
+            {items
+              .slice(indexofFirstItem, indexofLastItem)
+              .map((item, index) => (
+                <Tr key={item.country}>
+                  <Td>{indexofFirstItem + index + 1}</Td>
+                  <Td>{item.country}</Td>
+                  <Td>{item.continent}</Td>
+                  <Td isNumeric>{numberWithcommas(item.population)}</Td>
+                  <Td isNumeric>{numberWithcommas(item.cases.new)}</Td>
+                  <Td isNumeric>{numberWithcommas(item.cases.total)}</Td>
+                  <Td isNumeric>{numberWithcommas(item.deaths.new)}</Td>
+                  <Td isNumeric>{numberWithcommas(item.deaths.total)}</Td>
+                  <Td>
+                    <Button
+                      size="sm"
+                      colorScheme={"whatsapp"}
+                      as={Link}
+                      to={`/covid-stats/country-stats/${item.country}`}
+                      state={{ country: item.country }}
+                    >
+                      more info
+                    </Button>
+                  </Td>
+                </Tr>
+              ))}
           </Tbody>
         </Table>
       </TableContainer>
-      {!filterName && (
-        <Center py={[2, 3]} gap={2}>
-          {pageNumbers.map((item) => (
-            <Center
-              w="20px"
-              h="20px"
-              p={4}
-              // border="1px solid #333"
-              cursor={item !== currentPage ? "pointer" : null}
-              bg={item === currentPage ? "green.600" : "gray.700"}
-              color="white"
-              onClick={() => handleClick(item)}
-              key={item}
-            >
-              {item}
-            </Center>
-          ))}
-        </Center>
-      )}
+
+      <Center py={[2, 3]} gap={2}>
+        {pageNumbers.map((item) => (
+          <Center
+            w="20px"
+            h="20px"
+            p={4}
+            cursor={item !== currentPage ? "pointer" : null}
+            bg={item === currentPage ? "green.600" : "gray.700"}
+            color="white"
+            onClick={() => handleClick(item)}
+            key={item}
+          >
+            {item}
+          </Center>
+        ))}
+      </Center>
     </>
   );
 };

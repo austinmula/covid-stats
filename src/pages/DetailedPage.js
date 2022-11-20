@@ -71,17 +71,17 @@ const DetailedPage = () => {
             <GridList
               key={"cty.cases.active"}
               name="Active Cases:"
-              item={cty.cases.active}
+              item={numberWithcommas(cty.cases.active)}
             />
             <GridList
               key={"cty.cases.new"}
               name="New Cases:"
-              item={cty.cases.new}
+              item={numberWithcommas(cty.cases.new)}
             />
             <GridList
               key={"cty.cases.critical"}
               name="Critical Cases:"
-              item={cty.cases.critical}
+              item={numberWithcommas(cty.cases.critical)}
             />
             <GridList
               key={"cty.cases.recovered"}
@@ -101,7 +101,7 @@ const DetailedPage = () => {
             <GridList
               key={cty.tests.total}
               name="Total Tests:"
-              item={cty.tests.total}
+              item={numberWithcommas(cty.tests.total)}
             />
           </Grid>
         ))}

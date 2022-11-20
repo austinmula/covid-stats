@@ -17,7 +17,7 @@ const Search = ({ handleFilterByName }) => {
             type="text"
             id="country"
             name="country"
-            placeholder="Search using country name"
+            placeholder="Search using country or continent name"
             size={["sm", "md"]}
             variant="unstyled"
             border={"1px solid #D0D5DD"}
