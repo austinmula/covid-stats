@@ -19,6 +19,7 @@ export default function Router() {
       ],
     },
     {
+      path: "/",
       index: true,
       element: <Navigate to="/covid-stats/home" />,
     },
