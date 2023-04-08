@@ -126,7 +126,7 @@ const DetailedPage = () => {
           <GridItem bg="whiteAlpha.800" colSpan={[6, 6]}>
             <Box borderBottom="1px solid #f3f3f3" p={4}>
               <Text fontSize={"xl"}>
-                Overall Covid for 2022 {location.state.country}{" "}
+                Overall Covid for {new Date().getFullYear()} {location.state.country}{" "}
               </Text>
             </Box>
             <Box bg="whiteAlpha.700" p={8}>

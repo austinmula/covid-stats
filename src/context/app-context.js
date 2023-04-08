@@ -84,13 +84,13 @@ const AppContextProvider = ({ children }) => {
 
   // Get Historical Data of a given country
   const getCountryStats = async (data) => {
+    let year = new Date().getFullYear()
     options = {
       ...options,
       url: "https://covid-193.p.rapidapi.com/history",
       params: { country: data.country },
     };
 
-    // console.log(options);
     try {
       setIsLoading(true);
       const response = await axios.request(options);
@@ -103,7 +103,7 @@ const AppContextProvider = ({ children }) => {
 
       setCountry(
         response.data.response.filter(
-          (item) => format(new Date(item.day), "y") == "2022"
+          (item) => format(new Date(item.day), "y") == year
         )
       );
       setIsSuccess(true);
