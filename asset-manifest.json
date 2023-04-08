@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/covid-stats/static/css/main.c56de2bf.css",
-    "main.js": "/covid-stats/static/js/main.2a6c2525.js",
+    "main.js": "/covid-stats/static/js/main.1762dff3.js",
     "static/js/787.e1ca660c.chunk.js": "/covid-stats/static/js/787.e1ca660c.chunk.js",
     "index.html": "/covid-stats/index.html",
     "main.c56de2bf.css.map": "/covid-stats/static/css/main.c56de2bf.css.map",
-    "main.2a6c2525.js.map": "/covid-stats/static/js/main.2a6c2525.js.map",
+    "main.1762dff3.js.map": "/covid-stats/static/js/main.1762dff3.js.map",
     "787.e1ca660c.chunk.js.map": "/covid-stats/static/js/787.e1ca660c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c56de2bf.css",
-    "static/js/main.2a6c2525.js"
+    "static/js/main.1762dff3.js"
   ]
 }
