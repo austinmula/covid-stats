@@ -24,7 +24,7 @@ import { Link } from "react-router-dom";
 import { numberWithcommas } from "../utils/numberFormats";
 import Search from "./Search";
 
-const StatsTable = ({ data, isLoading }) => {
+const StatsTable = ({ data, isLoading, title }) => {
   const [itemsPerpage] = useState(25);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterName, setFilterName] = useState("");
@@ -66,25 +66,29 @@ const StatsTable = ({ data, isLoading }) => {
 
   return (
     <>
-      <Box py={[4, 9]} textAlign={"center"}>
+      <Box
+        py={[4, 9]}
+        textAlign={"center"}
+        // marginBottom={5}
+      >
         <Heading as="h1" size="xl" color="gray.700">
-          Overall Covid-19 Statistics
+          {title}
         </Heading>
         <Text mt={2} w={"60%"} mx="auto" color="gray.500" letterSpacing={"1px"}>
           The table below rapidAPI data for new infections, new deaths, and the
           cummulative number of cases, recoveries and deaths, for countries all
           over the world.
         </Text>
-        <Search handleFilterByName={handleFilterByName} />
+        {data.length > 10 && <Search handleFilterByName={handleFilterByName} />}
       </Box>
       <TableContainer>
         <Table variant="simple">
           <Thead>
             <Tr>
               <Th></Th>
-              <Th>Country</Th>
+              {data.length > 10 && <Th>Country</Th>}
               <Th>Continent</Th>
-              <Th isNumeric>Population</Th>
+              {data.length > 10 && <Th isNumeric>Population</Th>}
               <Th isNumeric>New Cases</Th>
               <Th isNumeric>Total Cases</Th>
               <Th isNumeric>New Deaths</Th>
@@ -98,9 +102,11 @@ const StatsTable = ({ data, isLoading }) => {
               .map((item, index) => (
                 <Tr key={item.country}>
                   <Td>{indexofFirstItem + index + 1}</Td>
-                  <Td>{item.country}</Td>
+                  {data.length > 10 && <Td>{item.country}</Td>}
                   <Td>{item.continent}</Td>
-                  <Td isNumeric>{numberWithcommas(item.population)}</Td>
+                  {data.length > 10 && (
+                    <Td isNumeric>{numberWithcommas(item.population)}</Td>
+                  )}
                   <Td isNumeric>{numberWithcommas(item.cases.new)}</Td>
                   <Td isNumeric>{numberWithcommas(item.cases.total)}</Td>
                   <Td isNumeric>{numberWithcommas(item.deaths.new)}</Td>
@@ -122,28 +128,31 @@ const StatsTable = ({ data, isLoading }) => {
         </Table>
       </TableContainer>
 
-      <Center py={[2, 3]} gap={2}>
-        {pageNumbers.map((item) => (
-          <Center
-            w="20px"
-            h="20px"
-            p={4}
-            cursor={item !== currentPage ? "pointer" : null}
-            bg={item === currentPage ? "green.600" : "gray.700"}
-            color="white"
-            onClick={() => handleClick(item)}
-            key={item}
-          >
-            {item}
-          </Center>
-        ))}
-      </Center>
+      {data.length > 10 && (
+        <Center py={[2, 3]} gap={2}>
+          {pageNumbers.map((item) => (
+            <Center
+              w="20px"
+              h="20px"
+              p={4}
+              cursor={item !== currentPage ? "pointer" : null}
+              bg={item === currentPage ? "green.600" : "gray.700"}
+              color="white"
+              onClick={() => handleClick(item)}
+              key={item}
+            >
+              {item}
+            </Center>
+          ))}
+        </Center>
+      )}
     </>
   );
 };
 
 StatsTable.propTypes = {
   data: PropTypes.array,
+  title: PropTypes.string,
   isLoading: PropTypes.bool,
 };
 
